@@ -12,7 +12,7 @@
 
 ### Maven configuration
 
-Ta4j is available on [Maven Central](http://search.maven.org/#search). You just have to add the following dependency in your `pom.xml` file.
+JCommons is available on [Maven Central](http://search.maven.org/#search). You just have to add the following dependency in your `pom.xml` file.
 
 ```xml
 <dependency>
