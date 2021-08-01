@@ -1,4 +1,4 @@
-# JCommons  [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) ![Maven Central](https://img.shields.io/maven-central/v/com.adtsw/jcommons?color=blue&label=Version) ![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.adtsw/jcommons?label=Snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)
+# Java Commons  [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) ![Maven Central](https://img.shields.io/maven-central/v/com.adtsw/jcommons?color=blue&label=Version) ![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.adtsw/jcommons?label=Snapshot&server=https%3A%2F%2Foss.sonatype.org%2F)
 
 
 ***Common Utils For Java***
