@@ -1,4 +1,4 @@
-package com.jp.jcommons.ds;
+package com.adtsw.jcommons.ds;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.javatuples.Pair;

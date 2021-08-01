@@ -1,4 +1,4 @@
-package com.jp.jcommons.utils;
+package com.adtsw.jcommons.utils;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;

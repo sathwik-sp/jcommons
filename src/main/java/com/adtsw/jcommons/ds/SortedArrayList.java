@@ -1,4 +1,4 @@
-package com.jp.jcommons.ds;
+package com.adtsw.jcommons.ds;
 
 import java.util.ArrayList;
 import java.util.Collections;

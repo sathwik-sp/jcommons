@@ -1,4 +1,4 @@
-package com.jp.jcommons.ds;
+package com.adtsw.jcommons.ds;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.logging.log4j.LogManager;

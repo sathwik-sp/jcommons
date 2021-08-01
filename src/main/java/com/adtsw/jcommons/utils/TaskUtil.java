@@ -1,4 +1,4 @@
-package com.jp.jcommons.utils;
+package com.adtsw.jcommons.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

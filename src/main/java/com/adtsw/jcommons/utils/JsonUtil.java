@@ -1,4 +1,4 @@
-package com.jp.jcommons.utils;
+package com.adtsw.jcommons.utils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.type.TypeReference;

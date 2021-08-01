@@ -1,4 +1,4 @@
-package com.jp.jcommons.ds;
+package com.adtsw.jcommons.ds;
 
 public abstract class MapIteratorComputer<K, V> {
 
