@@ -52,7 +52,7 @@ public class SortedHashMap<K, V> {
 
     public V getByIndex(int i) {
         if(i >= index.size()) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException(i);
         }
         readLock.lock();
         K requiredKey = index.get(i);
@@ -144,7 +144,7 @@ public class SortedHashMap<K, V> {
     public List<V> getLastKValues(int k) {
         readLock.lock();
         if(k > index.size()) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException(k);
         }
         List<K> kIndexes = index.subList(index.size() - k, index.size());
         List<V> lastKValues = new ArrayList<>();
@@ -158,7 +158,7 @@ public class SortedHashMap<K, V> {
     public SortedHashMap<K, V> subSet(int beginIndex, int endIndex) {
         readLock.lock();
         if(endIndex > index.size()) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException(endIndex);
         }
         SortedHashMap<K, V> subMap = new SortedHashMap<>();
         List<K> kIndexes = index.subList(beginIndex, endIndex);
@@ -172,7 +172,7 @@ public class SortedHashMap<K, V> {
     public List<V> subSetValues(int beginIndex, int endIndex) {
         readLock.lock();
         if(endIndex > index.size()) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException(endIndex);
         }
         List<V> subSetValues = new ArrayList<>();
         List<K> kIndexes = index.subList(beginIndex, endIndex);
@@ -225,7 +225,7 @@ public class SortedHashMap<K, V> {
         public Pair<K, V> next() {
             currentIndex = reverseOrder ? currentIndex - 1 : currentIndex + 1;
             if(currentIndex >= index.size() || currentIndex < 0) {
-                throw new ArrayIndexOutOfBoundsException();
+                throw new ArrayIndexOutOfBoundsException(currentIndex);
             }
             K key = index.get(currentIndex);
             return new Pair<>(key, data.get(key));
