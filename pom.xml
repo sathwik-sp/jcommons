@@ -10,7 +10,7 @@
 
     <groupId>com.adtsw</groupId>
     <artifactId>jcommons</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     
     <url>github.com/AdityaPawade/jcommons</url>
     <scm>

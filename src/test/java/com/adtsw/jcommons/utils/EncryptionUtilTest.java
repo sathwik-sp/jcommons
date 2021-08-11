@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class EncryptionUtilTest {
 
-    private final static char[] sessionEncryptionPassword = "jpstocktrading123".toCharArray();
+    private final static char[] sessionEncryptionPassword = "encryption_password".toCharArray();
 
     @Test
     public void testEncryption() throws EncryptionUtil.CryptoException {
