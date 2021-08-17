@@ -9,6 +9,14 @@ public class MetricsRegistry {
     private final ConcurrentHashMap<String, CounterValue> counters = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StatValue> stats = new ConcurrentHashMap<>();
 
+    private static class RegistryHolder {
+        public static MetricsRegistry instance = new MetricsRegistry();
+    }
+
+    public static MetricsRegistry getInstance() {
+        return RegistryHolder.instance;
+    }
+
     public void setStat(String statName, long statValue) {
         stats.put(statName, new StatValue(statValue));
     }

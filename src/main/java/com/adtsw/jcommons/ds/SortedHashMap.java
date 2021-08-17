@@ -218,7 +218,7 @@ public class SortedHashMap<K, V> {
 
         @Override
         public boolean hasNext() {
-            return reverseOrder ? currentIndex != 0 : currentIndex != index.size() - 1;
+            return reverseOrder ? currentIndex != 0 : currentIndex < index.size() - 1;
         }
 
         @Override
