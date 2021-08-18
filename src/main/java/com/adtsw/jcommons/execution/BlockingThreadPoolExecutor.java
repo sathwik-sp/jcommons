@@ -1,4 +1,4 @@
-package com.adtsw.jcommons.ds;
+package com.adtsw.jcommons.execution;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +34,23 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
         try {
             execute(task);
         } catch (RejectedExecutionException re) {
-            logger.info(poolName + " rejected " + infoToString() + " \n" + re.getMessage());
+            logger.warn(poolName + " rejected " + this + " \n" + re.getMessage());
             throw re;
         }
+    }
+
+    public boolean executeButRejectIfFull(final Runnable task) {
+        boolean acquired = semaphore.tryAcquire();
+        if(!acquired) {
+            return false;
+        }
+        try {
+            execute(task);
+        } catch (RejectedExecutionException re) {
+            logger.warn(poolName + " rejected " + this + " \n" + re.getMessage());
+            throw re;
+        }
+        return true;
     }
 
     /**Submits task to execution pool, but blocks while number of running threads 
@@ -67,11 +81,18 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
         }
     }
 
-    private String infoToString() {
+    public String toString() {
         return "sem queue length " + semaphore.getQueueLength() + " " +
             " sem per avail " + semaphore.availablePermits() + " " +
             " que psize " + getPoolSize() + " " +
             " que size " + getQueue().size() + " " +
             " que cap " + getQueue().remainingCapacity();
+    }
+
+    public ThreadPoolStats getStats() {
+        return new ThreadPoolStats(
+            semaphore.getQueueLength(), semaphore.availablePermits(),
+            getPoolSize(), getQueue().size(), getQueue().remainingCapacity()
+        );
     }
 }
