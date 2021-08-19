@@ -1,5 +1,6 @@
 package com.adtsw.jcommons.metrics;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MetricsRegistry {
@@ -98,6 +99,22 @@ public class MetricsRegistry {
             appendMetricValue(sb, timerName + " [avg] ", timeTaken.getAvg());
         });
         return sb.toString();
+    }
+
+    public HashMap<String, Long> toMap() {
+        HashMap<String, Long> metricsMap = new HashMap<>();
+        counters.forEach((counterName, counterValue) -> {
+            metricsMap.put(counterName + " [val] ", counterValue.getVal());
+        });
+        stats.forEach((statName, statValue) -> {
+            metricsMap.put(statName + " [val] ", statValue.getVal());
+        });
+        timings.forEach((timerName, timeTaken) -> {
+            metricsMap.put(timerName + " [max] ", timeTaken.getMax());
+            metricsMap.put(timerName + " [min] ", timeTaken.getMin());
+            metricsMap.put(timerName + " [avg] ", timeTaken.getAvg());
+        });
+        return metricsMap;
     }
 
     private void appendMetricValue(StringBuilder sb, String metric, Long metricValue) {

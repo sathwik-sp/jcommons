@@ -218,16 +218,16 @@ public class SortedHashMap<K, V> {
 
         @Override
         public boolean hasNext() {
-            return reverseOrder ? currentIndex != 0 : currentIndex < index.size() - 1;
+            return reverseOrder ? currentIndex >= 0 : currentIndex < index.size();
         }
 
         @Override
         public Pair<K, V> next() {
-            currentIndex = reverseOrder ? currentIndex - 1 : currentIndex + 1;
             if(currentIndex >= index.size() || currentIndex < 0) {
                 throw new ArrayIndexOutOfBoundsException(currentIndex);
             }
             K key = index.get(currentIndex);
+            currentIndex = reverseOrder ? currentIndex - 1 : currentIndex + 1;
             return new Pair<>(key, data.get(key));
         }
     }
