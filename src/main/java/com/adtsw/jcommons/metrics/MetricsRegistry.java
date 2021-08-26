@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MetricsRegistry {
 
-    private final ConcurrentHashMap<String, Long> startTimings = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, TimerValue> timings = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CounterValue> counters = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, StatValue> stats = new ConcurrentHashMap<>();
@@ -48,21 +47,22 @@ public class MetricsRegistry {
         counters.clear();
     }
 
+    public CounterValue getCounter(String counterName) {
+        return counters.getOrDefault(counterName, new CounterValue(0L));
+    }
+
     public TimerValue getTimer(String timerName) {
         return timings.getOrDefault(timerName, new TimerValue(0L, 0L, 0L));
     }
 
-    public void startTimer(String timerName) {
-        startTimings.put(Thread.currentThread().getId() + "_" + timerName, System.currentTimeMillis());
+    public TimerContext startTimer(String timerName) {
+        return new TimerContext(timerName);
     }
     
-    public void stopTimer(String timerName) {
-        String threadTimerName = Thread.currentThread().getId() + "_" + timerName;
-        Long startTime = startTimings.get(threadTimerName);
-        if(startTime != null) {
-            long timeTaken = System.currentTimeMillis() - startTime;
-            startTimings.remove(threadTimerName);
-            timings.compute(timerName, (key, currentValue) -> {
+    public void stopTimer(TimerContext timerContext) {
+        if(timerContext != null) {
+            long timeTaken = timerContext.stop();
+            timings.compute(timerContext.getTimerName(), (key, currentValue) -> {
                 return currentValue == null ? 
                     new TimerValue(timeTaken, timeTaken, timeTaken) :
                     new TimerValue(
@@ -75,12 +75,10 @@ public class MetricsRegistry {
     }
 
     public void clearTimer(String timerName) {
-        startTimings.remove(timerName);
         timings.remove(timerName);
     }
     
     public void clearTimers() {
-        startTimings.clear();
         timings.clear();
     }
     
