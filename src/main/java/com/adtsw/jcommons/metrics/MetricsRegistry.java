@@ -102,15 +102,15 @@ public class MetricsRegistry {
     public HashMap<String, Long> toMap() {
         HashMap<String, Long> metricsMap = new HashMap<>();
         counters.forEach((counterName, counterValue) -> {
-            metricsMap.put(counterName + " [val] ", counterValue.getVal());
+            metricsMap.put("counters." + counterName + " [val] ", counterValue.getVal());
         });
         stats.forEach((statName, statValue) -> {
-            metricsMap.put(statName + " [val] ", statValue.getVal());
+            metricsMap.put("stats." + statName + " [val] ", statValue.getVal());
         });
         timings.forEach((timerName, timeTaken) -> {
-            metricsMap.put(timerName + " [max] ", timeTaken.getMax());
-            metricsMap.put(timerName + " [min] ", timeTaken.getMin());
-            metricsMap.put(timerName + " [avg] ", timeTaken.getAvg());
+            metricsMap.put("timers." + timerName + " [max] ", timeTaken.getMax());
+            metricsMap.put("timers." + timerName + " [min] ", timeTaken.getMin());
+            metricsMap.put("timers." + timerName + " [avg] ", timeTaken.getAvg());
         });
         return metricsMap;
     }
