@@ -199,6 +199,10 @@ public class SortedHashMap<K, V> {
         }
     }
     
+    public int indexOf(K key) {
+        return index.indexOf(key);
+    }
+    
     public void clear() {
         writeLock.lock();
         data.clear();

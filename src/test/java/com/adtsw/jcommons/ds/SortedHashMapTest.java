@@ -60,4 +60,18 @@ public class SortedHashMapTest {
 
 //        Assert.assertEquals(plaintext, decryptedString);
     }
+    
+    @Test
+    public void testIndexOf() {
+
+        int retention = 5;
+        SortedHashMap<Long, String> map = new SortedHashMap<>(retention);
+        map.put(1L, "1L");
+        map.put(4L, "4L");
+        map.put(3L, "3L");
+        map.put(2L, "2L");
+
+        Assert.assertEquals(3, map.indexOf(4L));
+        Assert.assertEquals(-1, map.indexOf(5L));
+    }
 }
