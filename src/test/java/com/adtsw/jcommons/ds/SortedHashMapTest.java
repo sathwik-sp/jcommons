@@ -1,6 +1,5 @@
 package com.adtsw.jcommons.ds;
 
-import com.adtsw.jcommons.utils.EncryptionUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
