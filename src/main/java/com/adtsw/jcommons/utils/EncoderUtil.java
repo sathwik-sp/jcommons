@@ -1,12 +1,12 @@
 package com.adtsw.jcommons.utils;
 
-import com.adtsw.jcommons.models.StorageFormat;
+import com.adtsw.jcommons.models.EncodingFormat;
 
 import java.io.IOException;
 
 public class EncoderUtil {
 
-    public static String encode(StorageFormat storageFormat, String payload) {
+    public static String encode(EncodingFormat storageFormat, String payload) {
         String encodedPayload = null;
         switch (storageFormat) {
             case STRING:
@@ -23,7 +23,7 @@ public class EncoderUtil {
         return encodedPayload;
     }
 
-    public static String decode(StorageFormat storageFormat, String storedPayload) {
+    public static String decode(EncodingFormat storageFormat, String storedPayload) {
         String decodedPayload = null;
         switch (storageFormat) {
             case STRING:
