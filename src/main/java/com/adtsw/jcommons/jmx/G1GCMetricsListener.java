@@ -1,5 +1,7 @@
 package com.adtsw.jcommons.jmx;
 
+import com.adtsw.jcommons.jmx.exceptions.MetricNotAvailableException;
+
 import java.util.Arrays;
 import java.util.List;
 

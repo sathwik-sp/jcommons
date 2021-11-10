@@ -1,6 +1,7 @@
 package com.adtsw.jcommons.jmx;
 
 import com.adtsw.jcommons.execution.NamedThreadFactory;
+import com.adtsw.jcommons.jmx.exceptions.EmptyJmxMetricListenerListException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * with the given period and watch for any changes in metrics. It notify metrics add or delete events to
  * {@link JmxMetricsListener JmxMetricsListener}.
  */
-public class JmxMetricProviderService implements Closeable {
+public class JmxMetricProvider implements Closeable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JmxMetricProviderService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JmxMetricProvider.class);
 
     private static final List<String> blacklistedAttributes = Arrays.asList(
         "BootClassPath",
@@ -39,7 +40,7 @@ public class JmxMetricProviderService implements Closeable {
     private final List<JmxMetricsListener> metricsUpdateListeners;
     private final HashMap<ObjectName, List<JmxMetric>> metricsCache;
 
-    public JmxMetricProviderService(List<JmxMetricsListener> metricsUpdateListeners) {
+    public JmxMetricProvider(List<JmxMetricsListener> metricsUpdateListeners) {
         this(
             metricsUpdateListeners,
             Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(
@@ -48,8 +49,8 @@ public class JmxMetricProviderService implements Closeable {
         );
     }
 
-    public JmxMetricProviderService(List<JmxMetricsListener> metricsUpdateListeners, 
-                                    ScheduledExecutorService executor) {
+    public JmxMetricProvider(List<JmxMetricsListener> metricsUpdateListeners,
+                             ScheduledExecutorService executor) {
         this.executor = executor;
         this.metricsUpdateListeners = metricsUpdateListeners;
         this.metricsCache = new HashMap<>();
@@ -144,7 +145,7 @@ public class JmxMetricProviderService implements Closeable {
                    }
                    if (value instanceof CompositeDataSupport) {
                        CompositeDataSupport cd = (CompositeDataSupport) value;
-                       cd.getCompositeType().keySet().stream().forEach(item -> {
+                       cd.getCompositeType().keySet().forEach(item -> {
                            Object value1 = cd.get(item);
                            if (value1 instanceof Number) {
                                metrics.add(new JmxMetric(mbean, attr, item, server));

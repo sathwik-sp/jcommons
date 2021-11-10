@@ -1,5 +1,6 @@
 package com.adtsw.jcommons.jmx;
 
+import com.adtsw.jcommons.jmx.exceptions.MetricNotAvailableException;
 import lombok.Getter;
 
 import javax.management.*;

@@ -1,5 +1,7 @@
 package com.adtsw.jcommons.jmx;
 
+import com.adtsw.jcommons.jmx.exceptions.EmptyJmxMetricListenerListException;
+import com.adtsw.jcommons.jmx.exceptions.MetricNotAvailableException;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -31,7 +33,7 @@ public class JmxMetricProviderServiceTest {
         );
 
         try {
-            (new JmxMetricProviderService(Arrays.asList(new JmxMetricsListener() {
+            (new JmxMetricProvider(Arrays.asList(new JmxMetricsListener() {
 
                 @Override
                 public void metricChange(JmxMetric metric) {
