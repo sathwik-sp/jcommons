@@ -2,8 +2,8 @@ package com.adtsw.jcommons.jmx;
 
 import com.adtsw.jcommons.execution.NamedThreadFactory;
 import com.adtsw.jcommons.jmx.exceptions.EmptyJmxMetricListenerListException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class JmxMetricProvider implements Closeable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JmxMetricProvider.class);
+    private static final Logger LOG = LogManager.getLogger(JmxMetricProvider.class);
 
     private static final List<String> blacklistedAttributes = Arrays.asList(
         "BootClassPath",
