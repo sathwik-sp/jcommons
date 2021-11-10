@@ -1,5 +1,6 @@
 package com.adtsw.jcommons.jmx;
 
+import com.adtsw.jcommons.execution.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.lang.management.ManagementFactory;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,30 +32,6 @@ public class JmxMetricProviderService implements Closeable {
         "CollectionUsageThresholdExceeded", "CollectionUsageThreshold", "CollectionUsageThresholdCount"
     );
 
-    /**
-     * A simple named thread factory.
-     */
-    private static class NamedThreadFactory implements ThreadFactory {
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        private NamedThreadFactory(String name) {
-            final SecurityManager s = System.getSecurityManager();
-            this.group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-            this.namePrefix = "jxm-metric-provider-service-" + name + "-thread-";
-        }
-
-        public Thread newThread(Runnable r) {
-            final Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-            t.setDaemon(true);
-            if (t.getPriority() != Thread.NORM_PRIORITY) {
-                t.setPriority(Thread.NORM_PRIORITY);
-            }
-            return t;
-        }
-    }
-
     private static final AtomicInteger FACTORY_ID = new AtomicInteger();
 
     private final ScheduledExecutorService executor;
@@ -66,11 +42,14 @@ public class JmxMetricProviderService implements Closeable {
     public JmxMetricProviderService(List<JmxMetricsListener> metricsUpdateListeners) {
         this(
             metricsUpdateListeners,
-            Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("" + FACTORY_ID.incrementAndGet()))
+            Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory(
+                "jxm-metric-provider-service-" + FACTORY_ID.incrementAndGet())
+            )
         );
     }
 
-    public JmxMetricProviderService(List<JmxMetricsListener> metricsUpdateListeners, ScheduledExecutorService executor) {
+    public JmxMetricProviderService(List<JmxMetricsListener> metricsUpdateListeners, 
+                                    ScheduledExecutorService executor) {
         this.executor = executor;
         this.metricsUpdateListeners = metricsUpdateListeners;
         this.metricsCache = new HashMap<>();
@@ -138,7 +117,9 @@ public class JmxMetricProviderService implements Closeable {
         }
         // invoking metric removal for removed metrics
         for (ObjectName mbean : remaining) {
-            metricsCache.get(mbean).forEach(metric -> metricsUpdateListeners.forEach(listener -> listener.metricRemoval(metric)));
+            metricsCache.get(mbean).forEach(metric -> {
+                metricsUpdateListeners.forEach(listener -> listener.metricRemoval(metric));
+            });
             metricsCache.remove(mbean);
         }
     }
@@ -172,7 +153,8 @@ public class JmxMetricProviderService implements Closeable {
                    }
                }
             } catch (Exception e) {
-                LOG.error("Error in getting metric value of {} for attr {}, {}", mbean, attrName, e.getMessage());
+                LOG.error("Error in getting metric value of {} for attr {}, {}", 
+                    mbean, attrName, e.getMessage());
             }
         }
         return metrics;
@@ -191,7 +173,8 @@ public class JmxMetricProviderService implements Closeable {
                 executor.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
-                    System.err.println(getClass().getSimpleName() + ": ScheduledExecutorService did not terminate");
+                    System.err.println(getClass().getSimpleName() +
+                        ": ScheduledExecutorService did not terminate");
                 }
             }
         } catch (InterruptedException ie) {
@@ -208,63 +191,5 @@ public class JmxMetricProviderService implements Closeable {
     @Override
     public void close() {
         stop();
-    }
-
-    public static void main(String[] args) {
-
-        (new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    System.out.println("processing");
-                    Thread.sleep(5 * 1000);
-                    System.out.println("done");
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
-            }
-        })).start();
-
-        List<String> memoryPools = Arrays.asList(
-            "java.lang:name=G1 Old Gen,type=MemoryPool",
-            "java.lang:name=G1 Eden Space,type=MemoryPool",
-            "java.lang:name=G1 Survivor Space,type=MemoryPool"
-        );
-
-        try {
-            (new JmxMetricProviderService(Arrays.asList(new JmxMetricsListener() {
-                
-                @Override
-                public void metricChange(JmxMetric metric) {
-                    if(memoryPools.contains(metric.getObjectName()) && 
-                        metric.getName().equals("Usage")) {
-                        try {
-                            Object value = ((long) metric.getValue()) / 1024L / 1024L;
-                            System.out.println(metric + "\n" + value);
-                        } catch (MetricNotAvailableException e) {
-                            System.out.println(e);
-                        }
-                    }
-                }
-    
-                @Override
-                public void metricRemoval(JmxMetric metric) {
-                    System.out.println("asd");
-                }
-    
-                @Override
-                public void close() {
-    
-                }
-            }))).start(1, 10, TimeUnit.SECONDS);
-        } catch (EmptyJmxMetricListenerListException e) {
-            System.out.println(e);
-        }
-
-        try {
-            Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
