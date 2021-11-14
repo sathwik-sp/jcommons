@@ -58,7 +58,8 @@ public class JmxMetricProvider implements Closeable {
     }
 
     /**
-     * start jmx metric provider service with given initialDelay and then check for update in metrics with the given period.
+     * start jmx metric provider service with given initialDelay and then 
+     * check for update in metrics with the given period.
      *
      * @param initialDelay initialDelay in starting this service, so that most of the metrics should already be
      *                     present in the jmx MbeanServer
@@ -81,48 +82,57 @@ public class JmxMetricProvider implements Closeable {
     }
 
     /**
-     * checkForMetricsUpdate from JMX MBean Server. It collects all the mbeans from mbean server and then check for
-     * new one or if any mbean is removed from Mbean Server. It also notifies to all the JmxMetricListeners for new metrics
-     * and deletion of a metrics
+     * checkForMetricsUpdate from JMX MBean Server. It collects all the mbeans from mBean server 
+     * and then check for new one or if any mbean is removed from Mbean Server. 
+     * It also notifies to all the JmxMetricListeners for new metric and deletion of a metrics
      */
     private void checkForMetricsUpdate() {
-        Set<ObjectName> mbeans = server.queryNames(null, null);
-        Set<ObjectName> remaining = new HashSet<>(metricsCache.keySet());
-        for (ObjectName mbean : mbeans) {
+        
+        Set<ObjectName> allMBeans = server.queryNames(null, null);
+        Set<ObjectName> removedMBeans = new HashSet<>(metricsCache.keySet());
+        
+        for (ObjectName mBean : allMBeans) {
 
-            //if current mbean is already handled then ignore it
-            if (metricsCache.containsKey(mbean)) {
-                remaining.remove(mbean);
+            //if current mBean is already handled then ignore it
+            if (metricsCache.containsKey(mBean)) {
+                removedMBeans.remove(mBean);
                 continue;
             }
 
             try {
-                List<JmxMetric> metrics = getMetricsForMBean(mbean);
-
+                List<JmxMetric> metrics = getMetricsForMBean(mBean);
                 //storing to cache
-                metricsCache.put(mbean, metrics);
+                metricsCache.put(mBean, metrics);
                 LOG.debug("Metrics : {}", metrics.toString());
-
-                //invoking metric change to listeners for new metrics
-                metrics.forEach(metric -> metricsUpdateListeners.forEach(listener -> {
-                    try {
-                        listener.metricChange(metric);
-                    }catch (Exception e){
-                        LOG.error("error while calling listener.metricChange for metric:{}, listener:{}",
-                            metric.toString(), listener.getClass().getCanonicalName());
-                    }
-                }));
+                invokeMetricChangeListeners(metrics);
             } catch (JMException e) {
-                LOG.error("Exception in registering for MBean {}", mbean, e);
+                LOG.error("Exception in registering for MBean {}", mBean, e);
             }
         }
+
         // invoking metric removal for removed metrics
-        for (ObjectName mbean : remaining) {
-            metricsCache.get(mbean).forEach(metric -> {
+        for (ObjectName mBean : removedMBeans) {
+            metricsCache.get(mBean).forEach(metric -> {
                 metricsUpdateListeners.forEach(listener -> listener.metricRemoval(metric));
             });
-            metricsCache.remove(mbean);
+            metricsCache.remove(mBean);
         }
+
+        metricsCache.forEach((mBean, jmxMetrics) -> {
+            invokeMetricChangeListeners(jmxMetrics);
+        });
+    }
+
+    private void invokeMetricChangeListeners(List<JmxMetric> metrics) {
+        //invoking metric change to listeners for new metrics
+        metrics.forEach(metric -> metricsUpdateListeners.forEach(listener -> {
+            try {
+                listener.metricChange(metric);
+            }catch (Exception e){
+                LOG.error("error while calling listener.metricChange for metric:{}, listener:{}",
+                    metric.toString(), listener.getClass().getCanonicalName());
+            }
+        }));
     }
 
     /**
