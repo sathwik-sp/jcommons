@@ -37,9 +37,9 @@ public class TaskUtilTest {
         try {
             Thread.sleep(11 * 1000);
             TaskUtil.cancelScheduledTask("task1");
-            Assert.assertEquals(5, interruptionCount.get());
-            Assert.assertEquals(5, taskCompletionCount.get());
-            Assert.assertEquals(5, timeoutCount.get());
+            Assert.assertTrue(interruptionCount.get() >= 5);
+            Assert.assertTrue(taskCompletionCount.get() >= 5);
+            Assert.assertTrue(timeoutCount.get() >= 5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -76,7 +76,7 @@ public class TaskUtilTest {
             TaskUtil.cancelScheduledTask("task1");
             Assert.assertEquals(0, interruptionCount.get());
             Assert.assertEquals(0, timeoutCount.get());
-            Assert.assertEquals(11, taskCompletionCount.get());
+            Assert.assertTrue(taskCompletionCount.get() >= 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
