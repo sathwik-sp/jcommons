@@ -30,9 +30,16 @@ public class ScheduledTask implements Runnable {
         try {
             Thread taskThread = new Thread(actor::execute);
             taskThread.start();
+            long startTs = System.currentTimeMillis();
             taskThread.join(timeoutInSeconds * 1000L);
+            if(taskThread.isAlive()) {
+                logger.warn("Terminating task due to timeout : " + taskName);
+                taskThread.interrupt();
+            };
+            long endTs = System.currentTimeMillis();
+            logger.info("Task " + taskName + " took " + (endTs - startTs) + " ms");
         } catch (InterruptedException e) {
-            logger.warn("Terminating task due to timeout : " + taskName);
+            logger.warn("Terminating task due to interruption : " + taskName);
         }
     }
 }
