@@ -33,13 +33,14 @@ public class ScheduledTask implements Runnable {
             long startTs = System.currentTimeMillis();
             taskThread.join(timeoutInSeconds * 1000L);
             if(taskThread.isAlive()) {
-                logger.warn("Terminating task due to timeout : " + taskName);
+                logger.warn("Terminating task " + taskName + " due to timeout");
                 taskThread.interrupt();
+                actor.onTimeout();
             };
             long endTs = System.currentTimeMillis();
             logger.info("Task " + taskName + " took " + (endTs - startTs) + " ms");
         } catch (InterruptedException e) {
-            logger.warn("Terminating task due to interruption : " + taskName);
+            logger.warn("Terminating task " + taskName + " due to interruption");
         }
     }
 }
