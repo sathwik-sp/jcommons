@@ -21,7 +21,7 @@ public class TaskUtil {
                                     TimeUnit unit, Task task) {
     
         if(taskHandles.containsKey(taskName)) {
-            throw new RuntimeException("task " + taskName + " already exists");
+            logger.warn("task " + taskName + " already exists. overwriting task details");
         }
         
         logger.info("scheduling " + taskName + " at period " + period);
