@@ -53,6 +53,21 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
         return true;
     }
 
+    public boolean executeButBlockWithTimeoutIfFull(final Runnable task, long timeout, TimeUnit unit) 
+        throws InterruptedException {
+        boolean acquired = semaphore.tryAcquire(timeout, unit);
+        if(!acquired) {
+            return false;
+        }
+        try {
+            execute(task);
+        } catch (RejectedExecutionException re) {
+            logger.warn(poolName + " rejected " + this + " \n" + re.getMessage());
+            throw re;
+        }
+        return true;
+    }
+
     /**Submits task to execution pool, but blocks while number of running threads 
      * has reached the bound limit
      */
