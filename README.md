@@ -18,7 +18,7 @@ JCommons is available on [Maven Central](http://search.maven.org/#search). You j
 <dependency>
   <groupId>com.adtsw</groupId>
   <artifactId>jcommons</artifactId>
-  <version>1.0.12</version>
+  <version>1.0.13</version>
 </dependency>
 ```
 
