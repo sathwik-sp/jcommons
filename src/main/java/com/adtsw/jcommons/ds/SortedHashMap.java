@@ -184,10 +184,9 @@ public class SortedHashMap<K, V> {
     }
 
     private void removeFirst() {
-        K firstKey = index.size() > 0 ? index.get(0) : null;
+        K firstKey = index.removeFirst();
         if(firstKey != null) {
             data.remove(firstKey);
-            index.remove(0);
         }
     }
 

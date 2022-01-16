@@ -45,6 +45,18 @@ public class JsonUtil {
         }
     }
 
+    public static String write(Object value, boolean prettyPrint) {
+        try {
+            if(!prettyPrint) {
+                return write(value);
+            } else {
+                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static <T> T convert(Object value, TypeReference<T> valueTypeRef) {
         try {
             return mapper.convertValue(value, valueTypeRef);
