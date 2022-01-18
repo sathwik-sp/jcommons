@@ -58,6 +58,19 @@ public class ArithmeticUtil {
         throw new IllegalArgumentException("unsupported types: " + lhs.getClass() + " & " + rhs.getClass());
     }
 
+    public static <V extends Number> V mod(V lhs, V rhs)
+    {
+        if (lhs.getClass() == Integer.class && rhs.getClass() == Integer.class)
+            return (V) Integer.valueOf(((Integer) lhs) % ((Integer) rhs));
+        if (lhs.getClass() == Double.class && rhs.getClass() == Double.class)
+            return (V) Double.valueOf(((Double) lhs) % ((Double) rhs));
+        if (lhs.getClass() == Float.class && rhs.getClass() == Float.class)
+            return (V) Float.valueOf(((Float) lhs) % ((Float) rhs));
+        if (lhs.getClass() == Long.class && rhs.getClass() == Long.class)
+            return (V) Long.valueOf(((Long) lhs) % ((Long) rhs));
+        throw new IllegalArgumentException("unsupported types: " + lhs.getClass() + " & " + rhs.getClass());
+    }
+
     public static <V extends Number> Double pow(V lhs, V rhs)
     {
         if (lhs.getClass() == Integer.class && rhs.getClass() == Integer.class)
