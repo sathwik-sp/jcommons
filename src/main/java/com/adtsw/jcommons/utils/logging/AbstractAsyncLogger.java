@@ -44,25 +44,41 @@ public abstract class AbstractAsyncLogger<E> implements Logger<E> {
         
         int currentBufferSize = buffer.size();
         if(currentBufferSize > flushThreshold) {
-            flush();
+            flush(false);
         }
     }
 
     public void flush() {
-        if(!flushInProgress) {
-            flushInProgress = true;
-            boolean success = this.executorPool.executeButRejectIfFull(new Runnable() {
+        flush(false);
+    }
+
+    public void flush(boolean async) {
+        boolean success = false;
+        if(async) {
+            success = this.executorPool.executeButRejectIfFull(new Runnable() {
                 @Override
                 public void run() {
                     doFlush();
                 }
-            });
-            if(!success) {
-                logger.warn(
-                    "Unable to trigger log flush. Current buffer size is " + 
-                    buffer.size()
-                );
+            }); 
+        } else {
+            try {
+                this.executorPool.executeButBlockIfFull(new Runnable() {
+                    @Override
+                    public void run() {
+                        doFlush();
+                    }
+                });
+                success = true;
+            } catch (InterruptedException e) {
+                success = false;
             }
+        }
+        if(!success) {
+            logger.warn(
+                "Unable to trigger log flush. Current buffer size is " + 
+                buffer.size()
+            );
         }
     }
 
