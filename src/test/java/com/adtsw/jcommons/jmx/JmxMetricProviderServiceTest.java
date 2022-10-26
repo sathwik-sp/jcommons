@@ -50,7 +50,6 @@ public class JmxMetricProviderServiceTest {
 
                 @Override
                 public void metricRemoval(JmxMetric metric) {
-                    System.out.println("asd");
                 }
 
                 @Override
