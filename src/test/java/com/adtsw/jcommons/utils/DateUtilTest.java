@@ -70,5 +70,8 @@ public class DateUtilTest {
         long elapsedMONTHSEpoch1Offset = DateUtil.getElapsedEpochSecondFromEpochMilli(DateUtil.utcZoneId, ts, ChronoUnit.MONTHS, 1);
         System.out.println(elapsedMONTHSEpoch1Offset + " : " + DateUtil.getIndianDateTime(elapsedMONTHSEpoch1Offset * 1000) + " [MONTHS 1 offset]");
         Assert.assertEquals("2022-09-01T05:30:00+0530", DateUtil.getIndianDateTime(elapsedMONTHSEpoch1Offset * 1000));
+
+        long indianTimestamp = DateUtil.getIndianTimestampEpochSecond("2022-11-23T12:25:05+0530");
+        Assert.assertEquals(1669186505L, indianTimestamp);
     }
 }

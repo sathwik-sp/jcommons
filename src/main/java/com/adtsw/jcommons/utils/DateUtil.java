@@ -16,10 +16,14 @@ public class DateUtil {
     public static final ZoneId kolkataZoneId = ZoneId.of("Asia/Kolkata");
     public static final ZoneId utcZoneId = ZoneId.of("UTC");
 
+    // yyyy-MM-dd'T'HH:mm:ssXXX : 2022-10-14T09:35:00+05:30
+    // yyyy-MM-dd'T'HH:mm:ssX   : 2022-10-14T09:35:00+0530
+    
     private static final DateTimeFormatterBuilder dateTimeReadFormatterBuilder = new DateTimeFormatterBuilder()
         .append(DateTimeFormatter.ofPattern(
-            "[yyyy-MM-dd'T'HH:mm:ss]" + 
+            "[yyyy-MM-dd'T'HH:mm:ssXXX]" + 
             "[yyyy-MM-dd'T'HH:mm:ssX]" + 
+            "[yyyy-MM-dd'T'HH:mm:ss]" + 
             "[yyyy-MM-dd' 'HH:mm:ss]")
         );
 
