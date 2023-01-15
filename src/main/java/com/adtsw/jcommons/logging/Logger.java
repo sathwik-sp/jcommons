@@ -1,4 +1,4 @@
-package com.adtsw.jcommons.utils.logging;
+package com.adtsw.jcommons.logging;
 
 public interface Logger<E> {
     

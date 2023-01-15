@@ -1,4 +1,4 @@
-package com.adtsw.jcommons.utils.logging;
+package com.adtsw.jcommons.logging;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.adtsw.jcommons.utils.logging;
+package com.adtsw.jcommons.logging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,17 +62,8 @@ public abstract class AbstractAsyncLogger<E> implements Logger<E> {
                 }
             }); 
         } else {
-            try {
-                this.executorPool.executeButBlockIfFull(new Runnable() {
-                    @Override
-                    public void run() {
-                        doFlush();
-                    }
-                });
-                success = true;
-            } catch (InterruptedException e) {
-                success = false;
-            }
+            doFlush();
+            success = true;
         }
         if(!success) {
             logger.warn(
